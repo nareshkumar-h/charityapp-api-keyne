@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.revature.services.AdminService;
 import com.revature.services.DonationService;
+import com.revature.services.UserService;
 
 @Configuration
 public class BeanConfig {
@@ -17,6 +18,11 @@ public class BeanConfig {
 	public DonationService donationService()
 	{
 		return new DonationService();
+	}
+	@Bean
+	public UserService userService()
+	{
+		return new UserService();
 	}
 
 }

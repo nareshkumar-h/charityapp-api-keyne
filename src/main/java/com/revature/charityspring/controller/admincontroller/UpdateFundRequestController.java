@@ -36,6 +36,7 @@ public class UpdateFundRequestController {
 			} catch (Exception e) {
 				
 				errorMessage = e.getMessage();
+				e.printStackTrace();
 			}
 
 			// Prepare JSON Object
