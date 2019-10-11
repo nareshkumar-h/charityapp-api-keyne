@@ -16,7 +16,7 @@ import com.revature.services.UserService;
 
 @RestController
 @RequestMapping("admin")
-public class ListDonorContributionController {
+public class DonorContributionController {
 	
 	@Autowired
 	UserService userService; 
