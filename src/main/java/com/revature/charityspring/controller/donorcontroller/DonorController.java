@@ -1,7 +1,7 @@
-package com.revature.charityspring.controller.admincontroller;
+package com.revature.charityspring.controller.donorcontroller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,31 +9,30 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.revature.exception.DBException;
-import com.revature.model.Admin;
-import com.revature.services.AdminService;
+import com.revature.model.User;
+import com.revature.services.UserService;
 
 @RestController
-@RequestMapping("admin")
-public class AdminLoginController {
+@RequestMapping("donor")
+public class DonorController {
 	
-@Autowired
- AdminService adminService;
-
+	@Autowired
+	UserService userService;
 	
-    @PostMapping("/login")
+	@GetMapping("/login")
 	public String login(@RequestParam("email")String email, @RequestParam("password")String password) {
 
 		String errorMessage = null;
 
-		Admin user = null;
+		User user = null;
 		try {
-			user = adminService.adminLogin(email, password);
-
+			user = userService.donorLogin(email, password);
 			if (user == null) {
-				throw new DBException("Invalid Email/Password");
+				throw new DBException("Invalid Email/Password ");
 			}
 
 		} catch (Exception e) {
+
 			errorMessage = e.getMessage();
 		}
 
@@ -50,5 +49,6 @@ public class AdminLoginController {
 
 		return json;
 
-}
+	}
+
 }
