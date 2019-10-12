@@ -14,7 +14,7 @@ import com.revature.services.UserService;
 
 @RestController
 @RequestMapping("donor")
-public class DonorLoginController {
+public class DonorController {
 	
 	@Autowired
 	UserService userService;

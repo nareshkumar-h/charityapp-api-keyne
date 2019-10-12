@@ -15,7 +15,7 @@ import com.revature.services.DonationService;
 
 @RestController
 @RequestMapping("admin")
-public class ListFundRequestController {
+public class FundRequestController {
 	@Autowired
 	DonationService donationService;
 	

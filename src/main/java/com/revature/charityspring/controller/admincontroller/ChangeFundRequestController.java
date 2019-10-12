@@ -12,7 +12,7 @@ import com.revature.services.DonationService;
 
 @RestController
 @RequestMapping("admin")
-public class UpdateFundRequestController {
+public class ChangeFundRequestController {
 	@Autowired
 	DonationService donationService;
 	
@@ -36,7 +36,7 @@ public class UpdateFundRequestController {
 			} catch (Exception e) {
 				
 				errorMessage = e.getMessage();
-				e.printStackTrace();
+				
 			}
 
 			// Prepare JSON Object
