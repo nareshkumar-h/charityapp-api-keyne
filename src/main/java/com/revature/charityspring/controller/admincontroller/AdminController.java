@@ -3,15 +3,17 @@ package com.revature.charityspring.controller.admincontroller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.revature.charityspring.dto.Message;
 import com.revature.exception.DBException;
 import com.revature.model.Admin;
 import com.revature.model.DonationRequest;
@@ -19,6 +21,10 @@ import com.revature.model.DonorActivity;
 import com.revature.services.AdminService;
 import com.revature.services.DonationService;
 import com.revature.services.UserService;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("admin")
@@ -34,53 +40,48 @@ public class AdminController {
 	UserService userService;
 
 	@PostMapping("/login")
-	public String login(@RequestParam("email") String email, @RequestParam("password") String password) {
+	@ApiOperation(value = "Adminlogin API")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = Admin.class),
+			@ApiResponse(code = 400, message = "Invalid Credentials", response = Message.class) })
 
+	public ResponseEntity<?> login(@RequestParam("email") String email, @RequestParam("password") String password) {
 		String errorMessage = null;
 
 		Admin user = null;
 		try {
 			user = adminService.adminLogin(email, password);
 
-			if (user == null) {
-				throw new DBException("Invalid Email/Password");
-			}
-
 		} catch (Exception e) {
 			errorMessage = e.getMessage();
 		}
 
-		// Prepare JSON Object
-		String json = null;
-		Gson gson = new Gson();
+		Message message = null;
 		if (user != null) {
-			json = gson.toJson(user);
-		} else if (user == null) {
-			JsonObject obj = new JsonObject();
-			obj.addProperty("errorMessage", errorMessage);
-			json = obj.toString();
+			return new ResponseEntity<>(user, HttpStatus.OK);
+		} else {
+			message = new Message(errorMessage);
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
-
-		return json;
-
 	}
 
 	@PutMapping("/updateFundRequest")
-	public String updateRequest(@RequestParam("requestType") String requestType,
+	@ApiOperation(value = "UpdateFundRequest API")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonationRequest.class),
+			@ApiResponse(code = 400, message = "Invalid Credentials", response = Message.class) })
+	public ResponseEntity<?> updateRequest(@RequestParam("requestType") String requestType,
 			@RequestParam("requestAmount") double requestAmount) {
 
 		String errorMessage = null;
-		String message = null;
-		DonationRequest dr = null;
+
+		DonationRequest donationRequest = null;
 		try {
-			dr = new DonationRequest();
+			donationRequest = new DonationRequest();
 
-			dr.setRequestType(requestType);
+			donationRequest.setRequestType(requestType);
 
-			dr.setRequestAmount(requestAmount);
+			donationRequest.setRequestAmount(requestAmount);
 
-			donationService.updateDonationsByAdmin(dr);
-			message = "Success";
+			donationService.updateDonationsByAdmin(donationRequest);
 
 		} catch (Exception e) {
 
@@ -88,23 +89,23 @@ public class AdminController {
 
 		}
 
-		// Prepare JSON Object
-
-		JsonObject obj = new JsonObject();
-		if (message != null) {
-
-			obj.addProperty("message", message);
-		} else if (errorMessage != null) {
-			obj.addProperty("errorMessage", errorMessage);
+		Message message = null;
+		if (donationRequest != null) {
+			return new ResponseEntity<>(donationRequest, HttpStatus.OK);
+		} else {
+			message = new Message(errorMessage);
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
-
-		return obj.toString();
 
 	}
 
 	@GetMapping("/listDonorContribution")
-	public String listDonor() {
-		String json = null;
+	@ApiOperation(value = "ListDonorContribution API")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonorActivity.class),
+			@ApiResponse(code = 400, message = "Invalid Credentials", response = Message.class) })
+
+	public ResponseEntity<?> listDonor() {
+
 		List<DonorActivity> list = null;
 		String errorMessage = null;
 		try {
@@ -115,53 +116,70 @@ public class AdminController {
 			errorMessage = e.getMessage();
 
 		}
+		Message message = null;
 		if (list != null) {
-			Gson gson = new Gson();
-			json = gson.toJson(list);
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		} else {
+			message = new Message(errorMessage);
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
-		if (errorMessage != null) {
-			JsonObject obj = new JsonObject();
-			obj.addProperty("errorMessage", errorMessage);
-			json = errorMessage;
-		}
-		System.out.println("List" + json);
-
-		return json;
 
 	}
 
 	@GetMapping("/raiseFundRequest")
-	public String addRequest(@RequestParam("requestType") String requestType,
+	@ApiOperation(value = "RaiseFundRequest API")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonationRequest.class),
+			@ApiResponse(code = 400, message = "Invalid Credentials", response = Message.class) })
+	public ResponseEntity<?> addRequest(@RequestParam("requestType") String requestType,
 			@RequestParam("requestAmount") double requestAmount) {
 
 		String errorMessage = null;
-		String message = null;
-		DonationRequest dr = null;
+		DonationRequest donationRequest = null;
 
 		try {
-			dr = new DonationRequest();
+			donationRequest = new DonationRequest();
 
-			dr.setRequestType(requestType);
-			dr.setRequestAmount(requestAmount);
-			donationService.addDonations(dr);
-			message = "Success";
+			donationRequest.setRequestType(requestType);
+			donationRequest.setRequestAmount(requestAmount);
+			donationService.addDonations(donationRequest);
 
 		} catch (Exception e) {
 
 			errorMessage = e.getMessage();
 		}
-
-		// Prepare JSON Object
-
-		JsonObject obj = new JsonObject();
-		if (message != null) {
-
-			obj.addProperty("message", message);
-		} else if (errorMessage != null) {
-			obj.addProperty("errorMessage", errorMessage);
+		Message message = null;
+		if (donationRequest != null) {
+			return new ResponseEntity<>(donationRequest, HttpStatus.OK);
+		} else {
+			message = new Message(errorMessage);
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
 		}
+	}
 
-		return obj.toString();
+	@GetMapping("/listFundRequest")
+	@ApiOperation(value = "listFundRequest API")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonationRequest.class),
+			@ApiResponse(code = 400, message = "Invalid Credentials", response = Message.class) })
+
+	public ResponseEntity<?> listFundRequest() {
+
+		List<DonationRequest> list = null;
+		String errorMessage = null;
+		try {
+
+			list = donationService.findAll();
+
+		} catch (DBException e) {
+			errorMessage = e.getMessage();
+
+		}
+		Message message = null;
+		if (list != null) {
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		} else {
+			message = new Message(errorMessage);
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+		}
 
 	}
 
