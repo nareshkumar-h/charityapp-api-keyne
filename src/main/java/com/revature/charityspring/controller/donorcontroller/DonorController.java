@@ -87,7 +87,7 @@ public class DonorController {
 
 	}
 
-	@GetMapping("/donorRegistration")
+	@PostMapping("/donorRegistration")
 	@ApiOperation(value = "Donor Registration API")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = User.class),
 			@ApiResponse(code = 400, message = "Invalid Credentials", response = Message.class) })
