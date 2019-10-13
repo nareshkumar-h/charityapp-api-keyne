@@ -62,7 +62,7 @@ public class DonorController {
 
 	@GetMapping("/listFundRequest")
 	@ApiOperation(value = "listFundRequest API")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonorActivity.class),
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonationRequest.class),
 			@ApiResponse(code = 400, message = "Invalid Credentials", response = Message.class) })
 
 	public ResponseEntity<?> listFundRequest() {
