@@ -3,7 +3,7 @@ package com.revature.charityspring.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.revature.services.AdminService;
+import com.revature.charityspring.service.AdminService;
 import com.revature.services.DonationService;
 import com.revature.services.UserService;
 
@@ -24,5 +24,7 @@ public class BeanConfig {
 	{
 		return new UserService();
 	}
+	
+	
 
 }

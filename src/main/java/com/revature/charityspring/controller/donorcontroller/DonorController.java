@@ -13,9 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.revature.charityspring.dto.Message;
+import com.revature.charityspring.exception.ServiceException;
+import com.revature.charityspring.model.DonationRequest;
+import com.revature.charityspring.model.Donor;
+import com.revature.charityspring.model.DonorActivity;
+import com.revature.charityspring.service.ContributeFundService;
+import com.revature.charityspring.service.DonorService;
+import com.revature.charityspring.service.FundService;
 import com.revature.exception.DBException;
-import com.revature.model.DonationRequest;
-import com.revature.model.DonorActivity;
+
+
 import com.revature.model.User;
 import com.revature.services.DonationService;
 import com.revature.services.UserService;
@@ -27,12 +34,22 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping("donor")
 public class DonorController {
+	
+	@Autowired
+	DonorService donorService;
 
 	@Autowired
 	UserService userService;
 
 	@Autowired
 	DonationService donationService;
+	
+	@Autowired
+	FundService fundService;
+	
+	@Autowired
+	ContributeFundService contribute;
+
 
 	@PostMapping("/login")
 	@ApiOperation(value = "Donorlogin API")
@@ -42,9 +59,12 @@ public class DonorController {
 
 		String errorMessage = null;
 
-		User user = null;
+		Donor userobj = null;
 		try {
-			user = userService.donorLogin(email, password);
+			Donor user=new Donor();
+			user.setEmail(email);
+			user.setPassword(password);
+			userobj = donorService.donorLogin(user);
 
 		} catch (Exception e) {
 
@@ -52,8 +72,8 @@ public class DonorController {
 		}
 
 		Message message = null;
-		if (user != null) {
-			return new ResponseEntity<>(user, HttpStatus.OK);
+		if (userobj != null) {
+			return new ResponseEntity<>(userobj, HttpStatus.OK);
 		} else {
 			message = new Message(errorMessage);
 			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
@@ -71,7 +91,7 @@ public class DonorController {
 		String errorMessage = null;
 		try {
 
-			list = donationService.findAll();
+			list = fundService.findAll();
 
 		} catch (DBException e) {
 			errorMessage = e.getMessage();
@@ -87,6 +107,7 @@ public class DonorController {
 
 	}
 
+	
 	@PostMapping("/donorRegistration")
 	@ApiOperation(value = "Donor Registration API")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = User.class),
@@ -96,19 +117,19 @@ public class DonorController {
 
 		String errorMessage = null;
 
-		User user = null;
+		Donor user = null;
 		try {
-			user = new User();
+			user = new Donor();
 
 			user.setName(name);
 			user.setEmail(email);
 			user.setPassword(password);
 
-			userService.registerDonor(user);
+			donorService.donorRegister(user);
 
-		} catch (DBException e) {
-
+		} catch (ServiceException e) {
 			errorMessage = e.getMessage();
+			
 		}
 		Message message = null;
 		if (user != null) {
@@ -119,5 +140,35 @@ public class DonorController {
 		}
 
 	}
+	@GetMapping("/ContributeToFundRequest")
+	@ApiOperation(value = "Contribute To FundRequest API")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonorActivity.class),
+			@ApiResponse(code = 400, message = "Invalid Credentials", response = Message.class) })
+	public ResponseEntity<?> contributeRequest(@RequestParam("requestAmount") double amountFunded, @RequestParam("requestId") int requestId,
+			@RequestParam("userId") int userId) {
+		
+		String errorMessage = null;
+		DonorActivity donation=null;
+		
+		donation = new DonorActivity();
+		donation.setAmountFunded(amountFunded);
+		donation.setRequestId(requestId);
+		donation.setUserId(userId);
+		try {
+			contribute.donorFund(donation);
+		} catch (ServiceException e) {
+			
+		}
+	
+		Message message = null;
+		if (donation != null) {
+			return new ResponseEntity<>(donation, HttpStatus.OK);
+		} else {
+			message = new Message(errorMessage);
+			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+		
 
 }
