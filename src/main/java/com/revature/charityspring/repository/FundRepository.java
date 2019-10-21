@@ -16,14 +16,14 @@ public interface FundRepository extends JpaRepository<DonationRequest, Integer>{
     @Query("UPDATE DonationRequest f SET"
             
     	
-            + " f.requestAmount = f.requestAmount +:requestAmount WHERE f.id = :id")
+            + " f.requestAmount = f.requestAmount +:requestAmount WHERE f.id = :requestType")
            
     public int updateDonationByAdmin(
            
     
             @Param("requestAmount") Double amount,
             
-            @Param("id") int id
+            @Param("requestType") Integer requestType
            
             );
 	@Modifying

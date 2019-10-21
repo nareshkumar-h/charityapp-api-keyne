@@ -13,20 +13,26 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "donation_request")
-public class DonationRequest {
+@Table(name = "admin_transaction")
+public class AdminActivity {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
-
-	@Column(name = "request_type")
-	private String requestType;
 	
-	@Column(name = "request_amount")
-	private Double requestAmount;
+	@Column(name = "admin_id ")
+
+	private int adminId;
+
+	@Column(name = "request_type ")
+	private String requestType;
+
+	@Column(name = "request_amount  ")
+	private double requestAmount;
 	
 	@Column(name = "date")
 	private LocalDate date=LocalDate.now();
+
 
 }
