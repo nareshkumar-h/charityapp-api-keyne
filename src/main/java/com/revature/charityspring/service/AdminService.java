@@ -1,29 +1,52 @@
 package com.revature.charityspring.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.charityspring.dto.AdminDto;
+import com.revature.charityspring.exception.DBException;
 import com.revature.charityspring.exception.ServiceException;
 import com.revature.charityspring.model.Admin;
+import com.revature.charityspring.model.AdminActivity;
+import com.revature.charityspring.repository.AdminActivityRepository;
 import com.revature.charityspring.repository.AdminRepository;
-import com.revature.util.MessageConstant;
+
 
 
 @Service
 public class AdminService {
 	@Autowired
 	AdminRepository adminRepositoryObj;
-
-	public Admin adminLogin(Admin adminObj) throws ServiceException {
+	
+	
+	@Autowired
+	AdminActivityRepository adminActivityRepositoryObj;
+	
+	
+	public AdminDto adminLogin(Admin adminObj) throws ServiceException {
 		Admin admin = null;
 		String email = adminObj.getEmail();
 		String password = adminObj.getPassword();
 		admin = adminRepositoryObj.findByEmailAndPassword(email, password);
 		if (admin == null) {
-			throw new ServiceException(MessageConstant.INVALID_LOGIN_CREDENTIALS);
+			throw new ServiceException("unable to display");
 		}
-		return admin;
+		AdminDto adminDto=new AdminDto();
+		adminDto.setId(admin.getId());
+		adminDto.setEmail(admin.getEmail());
+		adminDto.setName(admin.getName());
+		return adminDto;
 
+	}
+
+
+	
+	public List<AdminActivity> listAdminTransaction() throws DBException {
+		List<AdminActivity> list = null;
+		list = adminActivityRepositoryObj.findAll();
+		return list;
 	}
 	
 }
