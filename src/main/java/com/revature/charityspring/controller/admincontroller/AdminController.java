@@ -77,38 +77,7 @@ public class AdminController {
 	}
 
 	
-	/*@GetMapping("/updateFundRequest")
-	@ApiOperation(value = "UpdateFundRequest API")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonationRequest.class),
-			@ApiResponse(code = 400, message = "Invalid Credentials", response = Message.class) })
-	public ResponseEntity<?> updateRequest(@RequestParam("requestAmount") double requestAmount,
-			@RequestParam("id") int id) {
-
-		String errorMessage = null;
-
-		DonationRequest donationRequest = null;
-		try {
-			donationRequest = new DonationRequest();
-
-			donationRequest.setId(id);
-
-			donationRequest.setRequestAmount(requestAmount);
-
-			fundService.updateDonationsByAdmin(donationRequest);
-			return new ResponseEntity<>(donationRequest, HttpStatus.OK);
-
-		} catch (Exception e) {
-
-			errorMessage = e.getMessage();
-
-			Message message = null;
-
-			message = new Message(errorMessage);
-			return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-		}
-
-	}*/
-
+	
 	@GetMapping("/listDonorContribution")
 	@ApiOperation(value = "ListDonorContribution API")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = DonorActivity.class),
